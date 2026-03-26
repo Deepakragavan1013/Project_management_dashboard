@@ -29,13 +29,13 @@ action to update the task status.
 
 You'll need Node.js installed. Then:
 ```bash
-git clone https://github.com/YOUR_USERNAME/project-management-dashboard.git
+git clone https://github.com/Deepakragavan1013/Project_management_dashboard
 cd project-management-dashboard
 npm install
 npm start
 ```
 
-Opens at http://localhost:3000
+Opens at https://project-management-dashboard-ashen.vercel.app/
 
 ---
 
@@ -165,40 +165,7 @@ better responsive breakpoints would help.
 
 ## Author
 
-**Your Name**  
-your@email.com  
-[GitHub](https://github.com/yourusername)
+Deepakragavan J
+cf012deepakragavan@gmail.com
+https://github.com/Deepakragavan1013
 ```
-
----
-
-## Why This README Works
-
-It reads like a real developer wrote it because:
-```
-✅ Explains WHY decisions were made
-   not just what was built
-
-✅ Honest about limitations
-   "I'd improve this with more time"
-
-✅ Written in first person
-   "I built", "I went with", "I tried"
-
-✅ Technical but not robotic
-   explains things in plain language
-
-✅ Shows thought process
-   the tricky parts, the decisions made
-
-✅ No excessive formatting
-   just clean readable text
-```
-
----
-
-Just replace these before pushing:
-```
-YOUR_USERNAME  → your GitHub username
-Your Name      → your actual name
-your@email.com → your email
