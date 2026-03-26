@@ -26,15 +26,15 @@ const styles = {
     zIndex: 1000,
   },
   modal: {
-    backgroundColor: 'white',
-    borderRadius: '12px',
-    padding: '32px',
-    width: '500px',
-    maxWidth: '95vw',
-    maxHeight: '90vh',
-    overflowY: 'auto',
-    position: 'relative',
-  },
+  backgroundColor: 'white',
+  borderRadius: '12px',
+  padding: '24px',
+  width: '500px',
+  maxWidth: '95vw',    // ✅ already there - good
+  maxHeight: '90vh',   // ✅ already there - good
+  overflowY: 'auto',   // ✅ already there - good
+  position: 'relative',
+},
   closeBtn: {
     position: 'absolute',
     top: '16px',

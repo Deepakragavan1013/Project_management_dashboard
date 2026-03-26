@@ -11,13 +11,12 @@ import TaskForm from '../components/TaskForm';
 import Modal from '../components/Modal';
 import { addTask, updateTask, deleteTask } from '../features/tasks/taskSlice';
 
-// These are your 5 fixed columns — order matters
 const COLUMNS = [
-  { id: 'Need to Do',     color: '#e3f2fd', headerColor: '#1976d2' },
-  { id: 'In Progress',    color: '#fffde7', headerColor: '#f9a825' },
-  { id: 'Need for Test',  color: '#f3e5f5', headerColor: '#7b1fa2' },
-  { id: 'Completed',      color: '#e8f5e9', headerColor: '#388e3c' },
-  { id: 'Re-open',        color: '#fce4ec', headerColor: '#c62828' },
+  { id: 'Need to Do',    color: '#e3f2fd', headerColor: '#1976d2' },
+  { id: 'In Progress',   color: '#fffde7', headerColor: '#f9a825' },
+  { id: 'Need for Test', color: '#f3e5f5', headerColor: '#7b1fa2' },
+  { id: 'Completed',     color: '#e8f5e9', headerColor: '#388e3c' },
+  { id: 'Re-open',       color: '#fce4ec', headerColor: '#c62828' },
 ];
 
 function Dashboard() {
@@ -25,36 +24,27 @@ function Dashboard() {
   const tasks = useSelector((state) => state.tasks);
   const projects = useSelector((state) => state.projects);
 
-
   const [filterProjectId, setFilterProjectId] = useState('');
-
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
 
- 
   const filteredTasks = filterProjectId
     ? tasks.filter((t) => t.projectId === filterProjectId)
     : tasks;
 
-
   const getColumnTasks = (columnId) =>
     filteredTasks.filter((t) => t.status === columnId);
-
 
   const onDragEnd = (result) => {
     const { draggableId, destination, source } = result;
 
-    
     if (!destination) return;
 
-  
     if (
       destination.droppableId === source.droppableId &&
       destination.index === source.index
     ) return;
 
-  
     dispatch(updateTaskStatus({
       id: draggableId,
       status: destination.droppableId,
@@ -88,12 +78,10 @@ function Dashboard() {
   return (
     <div style={styles.container}>
 
-  
+      {/* Header */}
       <div style={styles.header}>
         <h1 style={styles.title}>📋 Dashboard</h1>
         <div style={styles.headerRight}>
-
-         
           <select
             style={styles.filterSelect}
             value={filterProjectId}
@@ -106,58 +94,58 @@ function Dashboard() {
               </option>
             ))}
           </select>
-
           <button onClick={handleAdd} style={styles.addBtn}>
             + Add Task
           </button>
         </div>
       </div>
-      
 
-   {/* Summary Row - Overall counts */}
-<div style={styles.summaryRow}>
-  <div style={styles.summaryCard}>
-    <p style={styles.summaryNum}>{projects.length}</p>
-    <p style={styles.summaryLabel}>Total Projects</p>
-  </div>
-  <div style={styles.summaryCard}>
-    <p style={styles.summaryNum}>{tasks.length}</p>
-    <p style={styles.summaryLabel}>Total Tasks</p>
-  </div>
-  <div style={styles.summaryCard}>
-    <p style={{ ...styles.summaryNum, color: '#388e3c' }}>
-      {tasks.filter(t => t.status === 'Completed').length}
-    </p>
-    <p style={styles.summaryLabel}>Completed</p>
-  </div>
-  <div style={styles.summaryCard}>
-    <p style={{ ...styles.summaryNum, color: '#d32f2f' }}>
-      {tasks.filter(t => new Date(t.eta) < new Date()
-        && t.status !== 'Completed').length}
-    </p>
-    <p style={styles.summaryLabel}>Overdue</p>
-  </div>
-</div>
+      {/* Summary Row - Overall counts */}
+      <div style={styles.summaryRow}>
+        <div style={styles.summaryCard}>
+          <p style={styles.summaryNum}>{projects.length}</p>
+          <p style={styles.summaryLabel}>Total Projects</p>
+        </div>
+        <div style={styles.summaryCard}>
+          <p style={styles.summaryNum}>{tasks.length}</p>
+          <p style={styles.summaryLabel}>Total Tasks</p>
+        </div>
+        <div style={styles.summaryCard}>
+          <p style={{ ...styles.summaryNum, color: '#388e3c' }}>
+            {tasks.filter(t => t.status === 'Completed').length}
+          </p>
+          <p style={styles.summaryLabel}>Completed</p>
+        </div>
+        <div style={styles.summaryCard}>
+          <p style={{ ...styles.summaryNum, color: '#d32f2f' }}>
+            {tasks.filter(t =>
+              new Date(t.eta) < new Date() &&
+              t.status !== 'Completed'
+            ).length}
+          </p>
+          <p style={styles.summaryLabel}>Overdue</p>
+        </div>
+      </div>
 
+      {/* Stats Row - Per column counts */}
+      <div style={styles.statsRow}>
+        {COLUMNS.map((col) => (
+          <div key={col.id} style={styles.statCard}>
+            <p style={{ ...styles.statNum, color: col.headerColor }}>
+              {getColumnTasks(col.id).length}
+            </p>
+            <p style={styles.statLabel}>{col.id}</p>
+          </div>
+        ))}
+      </div>
 
-<div style={styles.statsRow}>
-  {COLUMNS.map((col) => (
-    <div key={col.id} style={styles.statCard}>
-      <p style={{ ...styles.statNum, color: col.headerColor }}>
-        {getColumnTasks(col.id).length}
-      </p>
-      <p style={styles.statLabel}>{col.id}</p>
-    </div>
-  ))}
-</div>
-
-     
+      {/* Kanban Board */}
       <DragDropContext onDragEnd={onDragEnd}>
         <div style={styles.board}>
           {COLUMNS.map((col) => (
             <div key={col.id} style={styles.columnWrapper}>
 
-              
+              {/* Column Header */}
               <div style={{
                 ...styles.columnHeader,
                 backgroundColor: col.headerColor,
@@ -168,7 +156,7 @@ function Dashboard() {
                 </span>
               </div>
 
-            
+              {/* Droppable Column */}
               <Droppable droppableId={col.id}>
                 {(provided, snapshot) => (
                   <div
@@ -177,7 +165,7 @@ function Dashboard() {
                     style={{
                       ...styles.column,
                       backgroundColor: snapshot.isDraggingOver
-                        ? col.color        
+                        ? col.color
                         : '#f8f9fa',
                     }}
                   >
@@ -216,8 +204,6 @@ function Dashboard() {
                         )}
                       </Draggable>
                     ))}
-
-                    {/* Required — placeholder keeps column height while dragging */}
                     {provided.placeholder}
                   </div>
                 )}
@@ -227,7 +213,7 @@ function Dashboard() {
         </div>
       </DragDropContext>
 
-     
+      {/* Add/Edit Task Modal */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <TaskForm
           onSubmit={handleFormSubmit}
@@ -243,11 +229,15 @@ const styles = {
   container: {
     padding: '0',
   },
+
+  // ── Header ──────────────────────────────
   header: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: '20px',
+    flexWrap: 'wrap',        // ✅ responsive
+    gap: '12px',             // ✅ responsive
   },
   title: {
     fontSize: '26px',
@@ -258,6 +248,7 @@ const styles = {
     display: 'flex',
     gap: '12px',
     alignItems: 'center',
+    flexWrap: 'wrap',        // ✅ responsive
   },
   filterSelect: {
     padding: '10px 14px',
@@ -276,13 +267,45 @@ const styles = {
     fontSize: '15px',
     fontWeight: 'bold',
   },
+
+  // ── Summary Row ─────────────────────────
+  summaryRow: {
+    display: 'flex',
+    gap: '16px',
+    marginBottom: '20px',
+    flexWrap: 'wrap',        // ✅ responsive
+  },
+  summaryCard: {
+    flex: 1,
+    minWidth: '120px',       // ✅ responsive
+    backgroundColor: 'white',
+    borderRadius: '10px',
+    padding: '20px',
+    textAlign: 'center',
+    boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+  },
+  summaryNum: {
+    fontSize: '32px',
+    fontWeight: 'bold',
+    margin: 0,
+    color: '#1976d2',
+  },
+  summaryLabel: {
+    fontSize: '13px',
+    color: '#888',
+    margin: '6px 0 0',
+  },
+
+  // ── Stats Row ────────────────────────────
   statsRow: {
     display: 'flex',
     gap: '12px',
     marginBottom: '24px',
+    flexWrap: 'wrap',        // ✅ responsive
   },
   statCard: {
     flex: 1,
+    minWidth: '120px',       // ✅ responsive
     backgroundColor: 'white',
     borderRadius: '10px',
     padding: '16px',
@@ -299,15 +322,17 @@ const styles = {
     color: '#888',
     margin: '4px 0 0',
   },
+
+  // ── Kanban Board ─────────────────────────
   board: {
     display: 'flex',
     gap: '12px',
-    overflowX: 'auto',       // horizontal scroll on small screens
+    overflowX: 'auto',       // ✅ horizontal scroll on mobile
     paddingBottom: '16px',
     alignItems: 'flex-start',
   },
   columnWrapper: {
-    minWidth: '220px',
+    minWidth: '220px',       // ✅ columns stay readable on mobile
     flex: 1,
     display: 'flex',
     flexDirection: 'column',
@@ -351,31 +376,6 @@ const styles = {
     color: '#ddd',
     marginTop: '4px',
   },
-  // Add to styles object
-summaryRow: {
-  display: 'flex',
-  gap: '16px',
-  marginBottom: '20px',
-},
-summaryCard: {
-  flex: 1,
-  backgroundColor: 'white',
-  borderRadius: '10px',
-  padding: '20px',
-  textAlign: 'center',
-  boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
-},
-summaryNum: {
-  fontSize: '32px',
-  fontWeight: 'bold',
-  margin: 0,
-  color: '#1976d2',
-},
-summaryLabel: {
-  fontSize: '13px',
-  color: '#888',
-  margin: '6px 0 0',
-},
 };
 
 export default Dashboard;

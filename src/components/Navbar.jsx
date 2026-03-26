@@ -33,23 +33,23 @@ function Navbar() {
 }
 
 const styles = {
-  nav: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '0 24px',
-    height: '60px',
-    backgroundColor: '#1976d2',
-    color: 'white',
-  },
-  logo: {
-    fontSize: '20px',
-    fontWeight: 'bold',
-  },
-  links: {
-    display: 'flex',
-    gap: '24px',
-  },
+ // Add this to your nav style
+nav: {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  padding: '0 16px',
+  height: '60px',
+  backgroundColor: '#1976d2',
+  color: 'white',
+  flexWrap: 'wrap',   // ← ADD THIS
+  gap: '8px',         // ← ADD THIS
+},
+links: {
+  display: 'flex',
+  gap: '8px',          // ← reduce gap
+  flexWrap: 'wrap',    // ← ADD THIS
+},
   link: {
     color: 'white',
     textDecoration: 'none',
