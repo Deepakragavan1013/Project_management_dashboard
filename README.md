@@ -1,8 +1,9 @@
 # Project Management Dashboard
 
-I built this as part of a technical assessment. It's a dashboard where you 
-can manage employees, projects and tasks — with a Kanban board that supports 
-drag and drop.
+A full-featured project management dashboard where you can manage employees, 
+projects and tasks — complete with a Kanban board that supports drag and drop.
+
+🚀 Live Demo: https://project-management-dashboard-ashen.vercel.app/
 
 ---
 
