@@ -1,70 +1,204 @@
-# Getting Started with Create React App
+# Project Management Dashboard
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+I built this as part of a technical assessment. It's a dashboard where you 
+can manage employees, projects and tasks — with a Kanban board that supports 
+drag and drop.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Why I built it this way
 
-### `npm start`
+I went with Redux Toolkit for state management because the data is shared 
+across multiple pages — employees are used in projects, projects are used in 
+tasks, and tasks show up on the dashboard. Passing all that through props 
+would've been a nightmare, so a central store made much more sense.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+For forms I used React Hook Form with Yup. I've used controlled inputs with 
+useState before and the re-rendering on every keystroke gets messy fast. 
+RHF handles that cleanly and Yup lets me define all the validation rules in 
+one place.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The drag and drop is handled by @hello-pangea/dnd which is the maintained 
+fork of react-beautiful-dnd. I picked it because the API is straightforward 
+and it works well with Redux — when a card is dropped I just dispatch an 
+action to update the task status.
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Getting it running
 
-### `npm run build`
+You'll need Node.js installed. Then:
+```bash
+git clone https://github.com/YOUR_USERNAME/project-management-dashboard.git
+cd project-management-dashboard
+npm install
+npm start
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Opens at http://localhost:3000
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## How to actually use it
 
-### `npm run eject`
+The order matters here:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+**Step 1 — Add employees first**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Go to the Employees page and add a few people. You need at least one 
+employee before you can do anything else. Fill in their name, position, 
+work email and upload a photo.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+The email has to be unique — if you try to add two people with the same 
+email it'll tell you.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+**Step 2 — Create a project**
 
-## Learn More
+Go to Projects and create one. Give it a title, description, logo image 
+and set the start and end dates. Then assign employees to it — you can 
+select multiple people.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+One thing to note: the end date has to be after the start date. Seems 
+obvious but I added validation for it anyway.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+**Step 3 — Add tasks**
 
-### Code Splitting
+Go to Tasks or the Dashboard and add a task. Select which project it 
+belongs to first — the employee dropdown will then only show people who 
+are actually assigned to that project. This was one of the trickier parts 
+to get right.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Set an ETA and optionally upload some reference images.
 
-### Analyzing the Bundle Size
+**Step 4 — Use the board**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+The Dashboard shows all tasks in a Kanban board with 5 columns:
+- Need to Do
+- In Progress  
+- Need for Test
+- Completed
+- Re-open
 
-### Making a Progressive Web App
+Drag cards between columns to update their status. You can also filter 
+by project using the dropdown at the top.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## Folder structure
+```
+src/
+├── app/
+│   └── store.js               
+├── features/
+│   ├── employees/
+│   │   └── employeeSlice.js   
+│   ├── projects/
+│   │   └── projectSlice.js    
+│   └── tasks/
+│       └── taskSlice.js       
+├── pages/
+│   ├── Dashboard.jsx          
+│   ├── Employees.jsx          
+│   ├── Projects.jsx           
+│   ├── ProjectDetail.jsx      
+│   └── Tasks.jsx              
+├── components/
+│   ├── Navbar.jsx             
+│   ├── Modal.jsx              
+│   ├── TaskCard.jsx           
+│   ├── TaskForm.jsx           
+│   ├── EmployeeCard.jsx       
+│   ├── EmployeeForm.jsx       
+│   ├── ProjectCard.jsx        
+│   └── ProjectForm.jsx        
+├── routes/
+│   └── AppRoutes.jsx          
+└── utils/
+    └── validationSchemas.js   
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+I tried to keep things organized by feature. Each Redux slice lives 
+next to the feature it belongs to rather than everything dumped in 
+one folder.
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Stack
 
-### `npm run build` fails to minify
+- React 18
+- Redux Toolkit
+- React Router DOM v6
+- React Hook Form + Yup
+- @hello-pangea/dnd
+- UUID for generating IDs
+- redux-persist for keeping data after refresh
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## Things I'd improve with more time
+
+The data right now lives in localStorage via redux-persist. It works 
+fine for a demo but in a real app you'd want a proper backend with a 
+database so data is shared across devices and users.
+
+I'd also add user authentication — right now anyone can see and edit 
+everything. And probably some kind of activity log so you can see 
+who changed what and when.
+
+The UI could also use some work on mobile. It's usable but the Kanban 
+board gets a bit cramped on small screens. A collapsible sidebar and 
+better responsive breakpoints would help.
+
+---
+
+## Screenshots
+
+| Dashboard | Employees |
+|-----------|-----------|
+| ![dashboard](screenshots/dashboard.png) | ![employees](screenshots/employees.png) |
+
+| Projects | Tasks |
+|----------|-------|
+| ![projects](screenshots/projects.png) | ![tasks](screenshots/tasks.png) |
+
+---
+
+## Author
+
+**Your Name**  
+your@email.com  
+[GitHub](https://github.com/yourusername)
+```
+
+---
+
+## Why This README Works
+
+It reads like a real developer wrote it because:
+```
+✅ Explains WHY decisions were made
+   not just what was built
+
+✅ Honest about limitations
+   "I'd improve this with more time"
+
+✅ Written in first person
+   "I built", "I went with", "I tried"
+
+✅ Technical but not robotic
+   explains things in plain language
+
+✅ Shows thought process
+   the tricky parts, the decisions made
+
+✅ No excessive formatting
+   just clean readable text
+```
+
+---
+
+Just replace these before pushing:
+```
+YOUR_USERNAME  → your GitHub username
+Your Name      → your actual name
+your@email.com → your email
